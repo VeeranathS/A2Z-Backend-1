@@ -1,6 +1,9 @@
 from django.views.decorators.csrf import csrf_exempt
+from django.shortcuts import render
 from rest_framework.decorators import api_view
+from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework import generics
 from django.http import JsonResponse
 from .models import *
 from rest_framework import status
@@ -8,6 +11,8 @@ from .serializers import *
 import googlemaps
 from django.conf import settings
 from math import radians, sin, cos, sqrt, atan2
+from .models import DispatchEntry, Cases, Accounts, ServiceTypes, Reasons, Customers, DispatchEntryAssets, DispatchStatus, SystemUser, Company,Vehicles
+from .serializers import DispatchEntrySerializer
 
 
 @api_view(['POST'])
@@ -935,7 +940,281 @@ def nearby_drivers(request):
         return Response(serializer.data)
 
     return Response([])
-    
+
+# @api_view(['GET', 'POST'])
+# def create_dispatch_entry(request):
+#     if request.method == 'GET':
+#         dispatch_entries = DispatchEntry.objects.all()
+#         serializer = DispatchEntrySerializer(dispatch_entries, many=True)
+#         return Response(serializer.data)
+
+#     elif request.method == 'POST':
+#         case_data = {
+#         }
+#         case = Cases.objects.create(**case_data)
+
+#         account_data = {
+#         }
+#         account = Accounts.objects.create(**account_data)
+
+#         service_type_data = {
+#         }
+#         service_type = ServiceTypes.objects.create(**service_type_data)
+
+#         reason_data = {
+#         }
+#         reason = Reasons.objects.create(**reason_data)
+
+#         customer_data = {
+#         }
+#         customer = Customers.objects.create(**customer_data)
+
+#         asset_data = {
+#         }
+#         asset = DispatchEntryAssets.objects.create(**asset_data)
+
+#         dispatch_status_data = {
+#         }
+#         dispatch_status = DispatchStatus.objects.create(**dispatch_status_data)
+
+#         csr_data = {
+#         }
+#         csr = SystemUser.objects.create(**csr_data)
+
+#         company_data = {
+#         }
+#         company = Company.objects.create(**company_data)
+
+#         dispatch_entry_data = {
+#             'case_id': case,
+#             'partner_service_id': 12345,
+#             'account_id': account,
+#             'service_type_id': service_type,
+#             'reason_id': reason,
+#             'customer_id': customer,
+#             'asset_id': asset,
+#             'dispatch_status_id': dispatch_status,
+#             'csr_id': csr,
+#             'company_id': company,
+#             'pickup_location': 'Some pickup location',
+#             'dropoff_location': 'Some dropoff location',
+#         }
+
+#         dispatch_entry = DispatchEntry.objects.create(**dispatch_entry_data)
+
+#         serializer = DispatchEntrySerializer(dispatch_entry)
+#         return Response(serializer.data)
+
+
+
+
+
+@api_view(['GET', 'POST'])
+def create_dispatch_entry(request):
+    if request.method == 'GET':
+        dispatch_entries = DispatchEntry.objects.all()
+        serializer = DispatchEntrySerializer(dispatch_entries, many=True)
+        return Response(serializer.data)
+    elif request.method == 'POST':
+        customer_data = {}
+        customer = Customers.objects.create(**customer_data)
+
+
+        dispatch_entry_data = {
+            'customer_id': customer,
+        }
+
+        dispatch_entry = DispatchEntry.objects.create(**dispatch_entry_data)
+        serializer = DispatchEntrySerializer(dispatch_entry)
+        return Response(serializer.data)
+
+# class WebPortalView(APIView):
+#     def get(self, request):
+#         # Render the web portal HTML form here
+#         return render(request, 'web_portal.html')
+
+#     def post(self, request):
+#         # Process form data from the web portal
+#         customer_name = request.POST.get('customer_name')
+#         customer_email = request.POST.get('customer_email')
+#         customer_phone = request.POST.get('customer_phone')
+#         # Get other form fields as needed
+
+#         # Create a new Customers entry
+#         customer = Customers.objects.create(
+#             name=customer_name,
+#             email=customer_email,
+#             phone=customer_phone
+#             # Set other fields accordingly
+#         )
+
+#         # Process form data for DispatchEntryAssets
+#         asset_license_plate = request.POST.get('license_plate')
+#         # Get other form fields for DispatchEntryAssets as needed
+
+#         # Create a new DispatchEntryAssets entry
+#         dispatch_entry_asset = DispatchEntryAssets.objects.create(
+#             customer_id=customer.id,
+#             license_plate=asset_license_plate
+#             # Set other fields accordingly
+#         )
+
+#         # Process form data for Vehicles
+#         vehicle_make = request.POST.get('vehicle_make')
+#         vehicle_class = request.POST.get('vehicle_class')
+#         vehicle_type = request.POST.get('vehicle_type')
+#         # Get other form fields for Vehicles as needed
+
+#         # Create a new Vehicles entry
+#         vehicle = Vehicles.objects.create(
+#             make=vehicle_make,
+#             vehicle_class=vehicle_class,
+#             vehicle_type=vehicle_type
+#             # Set other fields accordingly
+#         )
+
+#         # Once you have the data from all models, create a DispatchEntry
+#         dispatch_entry = DispatchEntry.objects.create(
+#             customer_id=customer.id,
+#             asset_id=dispatch_entry_asset.id,
+#             vehicle_id=vehicle.id
+#             # Set other fields for DispatchEntry as needed
+#         )
+
+#         return Response({'message': 'Data saved successfully!'})
+
+
+# views.py
+# views.py
+# views.py
+
+# from rest_framework.views import APIView
+# from rest_framework.response import Response
+# from rest_framework import status
+# from .models import Customers, DispatchEntryAssets, DispatchEntry, Vehicles
+# from .serializers import CustomersSerializer, DispatchEntryAssetsSerializer, DispatchEntrySerializer, VehiclesSerializer
+
+# class WebPortalView(APIView):
+#     def post(self, request):
+#         # Deserialize the JSON data sent by ReactJS
+#         data = request.data
+
+#         # Create a new Customers entry
+#         customer_serializer = CustomersSerializer(data=data)
+#         if customer_serializer.is_valid():
+#             customer = customer_serializer.save()
+#         else:
+#             return Response(customer_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+#         # Create a new DispatchEntryAssets entry
+#         dispatch_entry_asset_serializer = DispatchEntryAssetsSerializer(data=data)
+#         if dispatch_entry_asset_serializer.is_valid():
+#             dispatch_entry_asset = dispatch_entry_asset_serializer.save()
+#         else:
+#             return Response(dispatch_entry_asset_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+#         # Create a new Vehicles entry
+#         vehicle_serializer = VehiclesSerializer(data=data)
+#         if vehicle_serializer.is_valid():
+#             vehicle = vehicle_serializer.save()
+#         else:
+#             return Response(vehicle_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+#         # Create a new DispatchEntry
+#         dispatch_entry_data = {
+#             "customer_id": customer.id,
+#             "asset_id": dispatch_entry_asset.id,
+#             "vehicle_id": vehicle.id,
+#             "dispatch_status_id": 1,  # Example: Set the dispatch status ID here
+#             "pickup_location": "Some location",  # Example: Set the pickup location here
+#             # Add other fields for DispatchEntry as needed
+#         }
+
+#         dispatch_entry_serializer = DispatchEntrySerializer(data=dispatch_entry_data)
+#         if dispatch_entry_serializer.is_valid():
+#             dispatch_entry_serializer.save()
+#         else:
+#             return Response(dispatch_entry_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+#         return Response({'message': 'Data saved successfully!'})
+
+
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from .models import Customers, DispatchEntryAssets, DispatchEntry, Vehicles
+from .serializers import CustomersSerializer, DispatchEntryAssetsSerializer, DispatchEntrySerializer, VehiclesSerializer
+
+class WebPortalView(APIView):
+    def post(self, request):
+        # Deserialize the JSON data sent by ReactJS
+        data = request.data
+
+        # Create a new Customers entry
+        customer_serializer = CustomersSerializer(data=data)
+        if customer_serializer.is_valid():
+            customer = customer_serializer.save()
+        else:
+            return Response(customer_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        # Create a new DispatchEntryAssets entry
+        dispatch_entry_asset_serializer = DispatchEntryAssetsSerializer(data=data)
+        if dispatch_entry_asset_serializer.is_valid():
+            dispatch_entry_asset = dispatch_entry_asset_serializer.save()
+        else:
+            return Response(dispatch_entry_asset_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        # Create a new Vehicles entry
+        vehicle_serializer = VehiclesSerializer(data=data)
+        if vehicle_serializer.is_valid():
+            vehicle = vehicle_serializer.save()
+        else:
+            return Response(vehicle_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        # At this point, we have valid customer, asset, and vehicle objects
+
+        # Create a new DispatchEntry
+        dispatch_entry_data = {
+            "customer_id": customer.id,
+            "asset_id": dispatch_entry_asset.id,
+            "vehicle_id": vehicle.id,
+            "dispatch_status_id": 1,  # Example: Set the dispatch status ID here
+            "pickup_location": "Some location",  # Example: Set the pickup location here
+            # Add other fields for DispatchEntry as needed
+        }
+
+        dispatch_entry_serializer = DispatchEntrySerializer(data=dispatch_entry_data)
+        if dispatch_entry_serializer.is_valid():
+            dispatch_entry_serializer.save()
+            return Response({'message': 'Data saved successfully!'})
+        else:
+            return Response(dispatch_entry_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def get(self, request):
+        # Implement your logic to handle GET requests here
+        # For example, fetch data from the database and return as JSON response
+        dispatch_entries = DispatchEntry.objects.all()
+        serializer = DispatchEntrySerializer(dispatch_entries, many=True)
+        return Response(serializer.data)
+
+
+
+
+
+
+
+
+
+
+# serializer = VehiclesSerializer(vehicle, data=request.data)
+#         if serializer.is_valid():
+#             serializer.save()
+#             return Response(serializer.data)
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
 # @api_view(['POST'])
 # def create_customer(request):
 #     name = request.data.get('name')

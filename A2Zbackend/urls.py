@@ -1,5 +1,6 @@
 from django.urls import path
 from A2Zbackend import views
+from . import views
 from .views import *
 from django.urls import re_path
 
@@ -45,8 +46,10 @@ urlpatterns = [
     path('entry-status-records/', views.dispatch_entry_status_records_list),
     path('entry-status-records/<int:record_id>/', views.dispatch_entry_status_records_detail),
 
-    path('dispatch-entries/', dispatch_entry_list, name='dispatch-entry-list'),
-    path('dispatch-entries/<int:entry_id>/', dispatch_entry_detail, name='dispatch-entry-detail'),
+    path('dispatch-entries/', views.create_dispatch_entry),
+    path('dispatch-entries/<int:entry_id>/', views.create_dispatch_entry),
+
+    path('web-portal/', views.WebPortalView.as_view(), name='web-portal'),
 
     path('driver-locations/', views.driver_location_list),
     path('driver-locations/<int:location_id>/', views.driver_location_detail),

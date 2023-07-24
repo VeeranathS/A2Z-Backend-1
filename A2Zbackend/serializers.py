@@ -57,10 +57,7 @@ class DispatchEntryStatusRecordsSerializer(serializers.ModelSerializer):
         model = DispatchEntryStatusRecords
         fields = '__all__'
 
-class DispatchEntrySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = DispatchEntry
-        fields = '__all__'
+
         
 class DriverLocationSerializer(serializers.ModelSerializer):
     class Meta:
@@ -120,4 +117,22 @@ class SystemUserStatusRecordsSerializer(serializers.ModelSerializer):
 class VehiclesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Vehicles
+        fields = '__all__'
+
+
+
+
+class DispatchEntrySerializer(serializers.ModelSerializer):
+    case_id = CasesSerializer()
+    account_id = AccountsSerializer()
+    service_type_id = ServiceTypesSerializer()
+    reason_id = ReasonsSerializer()
+    customer_id = CustomersSerializer()
+    asset_id = DispatchEntryAssetsSerializer()
+    dispatch_status_id = DispatchStatusSerializer()
+    csr_id = SystemUserSerializer()
+    company_id = CompanySerializer()
+
+    class Meta:
+        model = DispatchEntry
         fields = '__all__'

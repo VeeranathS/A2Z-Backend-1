@@ -7,8 +7,8 @@ class Accounts(models.Model):
     address = models.CharField(max_length=100)
     email = models.EmailField()
     phone = models.CharField(max_length=100)
-    # alternate_phone = models.CharField(max_length=100)
     account_type = models.CharField(max_length=100)
+    # alternate_phone = models.CharField(max_length=100)
 
     def save(self, *args, **kwargs):
         if not self.account_id:
@@ -92,43 +92,40 @@ class DispatchEntry(models.Model):
     dispatch_entry_id = models.AutoField(primary_key=True)
     case_id = models.ForeignKey('Cases', on_delete=models.CASCADE, null=True)
     create_date = models.DateField(auto_now_add=True)
-    # partner_caseid = models.IntegerField()
     partner_service_id = models.IntegerField()
     account_id = models.ForeignKey('Accounts', on_delete=models.CASCADE)
-    # source = models.CharField(max_length=100,default="web")
-    service_type_id = models.ForeignKey('ServiceTypes', on_delete=models.CASCADE)
+    service_type_id = models.ForeignKey('ServiceTypes', on_delete=models.CASCADE,null=True)
     reason_id = models.ForeignKey('Reasons', on_delete=models.CASCADE)
     customer_id = models.ForeignKey('Customers', on_delete=models.CASCADE)
     asset_id = models.ForeignKey('DispatchEntryAssets', on_delete=models.CASCADE, null=True)
     dispatch_status_id = models.ForeignKey('DispatchStatus', on_delete=models.CASCADE)
-    # repair_status = models.CharField(max_length=100)
     csr_id = models.ForeignKey('SystemUser',on_delete=models.CASCADE)
     company_id = models.ForeignKey('Company',on_delete=models.CASCADE)
+    pickup_location = models.CharField(max_length=100)
+    dropoff_location = models.CharField(max_length=100, null=True)
+    # partner_caseid = models.IntegerField()
+    # repair_status = models.CharField(max_length=100)
+    # source = models.CharField(max_length=100,default="web")
     # scheduled_date = models.DateField()
     # is_scheduled = models.BooleanField()
     # invoice_id = models.ForeignKey('Invoices', on_delete=models.CASCADE)
     # payment_id = models.ForeignKey('Payments', on_delete=models.CASCADE, related_name='dispatch_entries_payment_id')
     # payment_status = models.ForeignKey('Payments', on_delete=models.CASCADE, related_name='dispatch_entries_payment_status')
-    pickup_location = models.CharField(max_length=100)
-    dropoff_location = models.CharField(max_length=100, null=True)
     # eta = models.DateTimeField()
     # ata = models.DateTimeField(null=True)
 
 class DispatchEntryAssets(models.Model):
     asset_id = models.AutoField(primary_key=True)
     customer_id = models.ForeignKey('Customers', on_delete=models.CASCADE)
-    dispatch_entry_id = models.ForeignKey('DispatchEntry', on_delete=models.CASCADE, null=True)
-    # colorid = models.IntegerField()
+    license_plate = models.CharField(max_length=100)
+    create_date = models.DateField(auto_now_add=True)
+    vehicle_id = models.ForeignKey('Vehicles', on_delete=models.CASCADE)
     # body_type_id = models.IntegerField()
-    make = models.CharField(max_length=100)
-    vehicle_class = models.CharField(max_length=100)
-    vehicle_type = models.IntegerField()
+    # colorid = models.IntegerField()
     # model = models.CharField(max_length=100)
     # model_year = models.IntegerField()
-    license_plate = models.CharField(max_length=100)
     # license_state = models.CharField(max_length=100)
     # license_year = models.IntegerField()
-    create_date = models.DateField(auto_now_add=True)
     
 class DispatchEntryStatusRecords():
     id = models.AutoField(primary_key=True)
@@ -268,19 +265,6 @@ class SystemUserStatusRecords(models.Model):
     
 class Vehicles(models.Model):
     vehicle_id = models.AutoField(primary_key=True)
-    # make_id = models.IntegerField()
     make = models.CharField(max_length=100)
-    # model_id = models.IntegerField()
-    # model = models.CharField(max_length=100)
-    # year = models.IntegerField()
     vehicle_class = models.CharField(max_length=100)
     vehicle_type = models.IntegerField()
-
-    def save(self, *args, **kwargs):
-        if not self.vehicle_id:
-            last_vehicle = Vehicles.objects.order_by('-vehicle_id').first()
-            if last_vehicle:
-                self.vehicle_id = last_vehicle.vehicle_id + 1
-            else:
-                self.vehicle_id = 1
-        super(Vehicles, self).save(*args, **kwargs)

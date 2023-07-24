@@ -89,3 +89,100 @@ drivers/nearby/?pickup_latitude=<PICKUP_LATITUDE>&pickup_longitude=<PICKUP_LONGI
     pickup_latitude,
     pickup_longitude
 }
+
+#complete web portal api
+http://127.0.0.1:8000/web-portal/
+#post request
+{
+   "customer": {
+      "name": "anjan",
+      "email": "rkabadi2@gmail.com",
+      "phone": "9164629281",
+      "whatsapp_number": "9164629281"
+    },
+    "asset_id": {
+      "license_plate": "KA00AA1234",
+      "create_date": "2023-07-22"
+    },
+    "vehicle":{
+      "make": "Toyota",
+      "vehicle_class": "SUV",
+      "vehicle_type": 1
+    }
+}
+
+#get request
+ {
+    "dispatch_entry_id": 1,
+    "case_id": {
+      "case_id": 1,
+      "dispatch_entry_id": null,
+      "csr_id": 1
+    },
+    "account_id": {
+      "account_id": 1,
+      "name": "A2Z ASSIST",
+      "create_date": "2023-07-20",
+      "address": "Bangalore",
+      "email": "A2Zassist@outlook.com",
+      "phone": "8333919515",
+      "account_type": "Broker"
+    },
+    "service_type_id": null,
+    "reason_id": {
+      "reason_id": 2,
+      "name": "BATTERY JUMPSTART",
+      "create_date": "2023-07-20",
+      "service_type": "ROS"
+    },
+    "customer_id": {
+      "customer_id": 1,
+      "name": "Rohan",
+      "email": "rkabadi2@gmail.com",
+      "phone": "9164629281",
+      "whatsapp_number": "9164629281"
+    },
+    "asset_id": {
+      "asset_id": 1,
+      "license_plate": "KA00AA1234",
+      "create_date": "2023-07-22",
+      "customer_id": 1,
+      "vehicle_id": 1
+    },
+    "dispatch_status_id": {
+      "dispatch_status_id": 0,
+      "name": "Waiting"
+    },
+    "csr_id": {
+      "csr_id": 1,
+      "name": "Rohan",
+      "create_date": "2023-07-22",
+      "role": "User",
+      "role_id": 1,
+      "status": "Okay"
+    },
+    "company_id": {
+      "company_id": 1001,
+      "name": "A2Z ASSIST",
+      "phone": "8333919515",
+      "email": "vvsrikar91@gmail.com",
+      "address": "10th floor, RMZ Latitude Commercial Building, Bellary Rd, Amruthnagar, Hebbal, Bengaluru, Karnataka 560024",
+      "city": "Bangalore",
+      "state": "Karnataka",
+      "pincode": "560024",
+      "country": "India",
+      "create_date": "2023-07-20",
+      "company_type": "1",
+      "status": "1",
+      "auth_token": "abc",
+      "is_deleted": false,
+      "monthly_fee": 100.0,
+      "notes": "A2Z assist",
+      "latitude": 13.0500131,
+      "longitude": 77.575169
+    },
+    "create_date": "2023-07-23",
+    "partner_service_id": 2,
+    "pickup_location": "RR Nagar",
+    "dropoff_location": null
+  },
