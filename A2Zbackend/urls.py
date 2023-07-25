@@ -49,7 +49,7 @@ urlpatterns = [
     path('dispatch-entries/', views.create_dispatch_entry),
     path('dispatch-entries/<int:entry_id>/', views.create_dispatch_entry),
 
-    path('web-portal/', views.WebPortalView.as_view(), name='web-portal'),
+    path('web-portal/', views.WebPortalView),
 
     path('driver-locations/', views.driver_location_list),
     path('driver-locations/<int:location_id>/', views.driver_location_detail),

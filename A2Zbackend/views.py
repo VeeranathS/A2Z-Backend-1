@@ -1006,6 +1006,99 @@ def nearby_drivers(request):
 #         return Response(serializer.data)
 
 
+import json
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from .models import DispatchEntry, Customers, DispatchEntryAssets, Vehicles
+
+@csrf_exempt
+def WebPortalView(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+
+        name = data.get('name')
+        email = data.get('email')
+        phone = data.get('phone')
+        whatsapp_number = data.get('whatsapp_number')
+        license_plate = data.get('license_plate')
+        make = data.get('make')
+        vehicle_class = data.get('vehicle_class')
+        vehicle_type = data.get('vehicle_type')
+        pickup_location = data.get('pickup_location')
+
+        customer = Customers.objects.create(
+            name=name,
+            email=email,
+            phone=phone,
+            whatsapp_number=whatsapp_number
+        )
+
+        customer_id = customer.customer_id
+
+        try:
+            vehicle = Vehicles.objects.get(make=make, vehicle_class=vehicle_class, vehicle_type=vehicle_type)
+        except Vehicles.DoesNotExist:
+            return JsonResponse({'error': 'Vehicle not found in the database.'}, status=404)
+
+        asset = DispatchEntryAssets.objects.create(
+            customer_id=customer,
+            license_plate=license_plate,
+            vehicle_id=vehicle
+        )
+
+        asset_id = asset.asset_id
+        try:
+            csr = SystemUser.objects.get(name='Rohan')
+        except SystemUser.DoesNotExist:
+            return JsonResponse({'error': 'CSR not found in the database.'}, status=404)
+        try:
+            reason = Reasons.objects.get(name='AIR FILL', service_type='ROS')
+        except Reasons.DoesNotExist:
+            return JsonResponse({'error': 'Reason not found in the database.'}, status=404)
+        try:
+            service_type = ServiceTypes.objects.get(service='AIR FILL', service_type='ROS')
+        except ServiceTypes.DoesNotExist:
+            return JsonResponse({'error': 'ServiceType not found in the database.'}, status=404)
+        try:
+            dispatch_status = DispatchStatus.objects.get(name='Waiting')
+        except DispatchStatus.DoesNotExist:
+            return JsonResponse({'error': 'DispatchStatus not found in the database.'}, status=404)
+        try:
+            company = Company.objects.get(name="A2Z ASSIST")
+        except Company.DoesNotExist:
+            return JsonResponse({'error': 'Company not found in the database.'}, status=404)
+        try:
+            account = Accounts.objects.get(name="ALLIANZ")
+        except Accounts.DoesNotExist:
+            return JsonResponse({'error':"Account not found in the database."},status=404)
+
+
+        case = Cases.objects.create(
+            dispatch_entry_id=None,  
+            csr_id=csr,  
+        )
+
+        dispatch_entry = DispatchEntry.objects.create(
+            customer_id=customer,
+            asset_id=asset,
+            account_id=account,
+            case_id=case,  
+            partner_service_id=0, 
+            service_type_id=service_type,  
+            reason_id=reason,  
+            dispatch_status_id=dispatch_status, 
+            csr_id=csr,  
+            company_id=company,  
+            pickup_location=pickup_location,  
+            dropoff_location="None"  
+        )
+
+        return JsonResponse({'message': 'Data successfully stored in DispatchEntry model.', 'customer_id': customer_id, 'asset_id': asset_id}, status=201)
+    else:
+        return JsonResponse({'error': 'Invalid request method.'}, status=400)
+
+
+
 
 
 
@@ -1138,65 +1231,7 @@ def create_dispatch_entry(request):
 
 #         return Response({'message': 'Data saved successfully!'})
 
-
-
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
-from .models import Customers, DispatchEntryAssets, DispatchEntry, Vehicles
-from .serializers import CustomersSerializer, DispatchEntryAssetsSerializer, DispatchEntrySerializer, VehiclesSerializer
-
-class WebPortalView(APIView):
-    def post(self, request):
-        # Deserialize the JSON data sent by ReactJS
-        data = request.data
-
-        # Create a new Customers entry
-        customer_serializer = CustomersSerializer(data=data)
-        if customer_serializer.is_valid():
-            customer = customer_serializer.save()
-        else:
-            return Response(customer_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-        # Create a new DispatchEntryAssets entry
-        dispatch_entry_asset_serializer = DispatchEntryAssetsSerializer(data=data)
-        if dispatch_entry_asset_serializer.is_valid():
-            dispatch_entry_asset = dispatch_entry_asset_serializer.save()
-        else:
-            return Response(dispatch_entry_asset_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-        # Create a new Vehicles entry
-        vehicle_serializer = VehiclesSerializer(data=data)
-        if vehicle_serializer.is_valid():
-            vehicle = vehicle_serializer.save()
-        else:
-            return Response(vehicle_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-        # At this point, we have valid customer, asset, and vehicle objects
-
-        # Create a new DispatchEntry
-        dispatch_entry_data = {
-            "customer_id": customer.id,
-            "asset_id": dispatch_entry_asset.id,
-            "vehicle_id": vehicle.id,
-            "dispatch_status_id": 1,  # Example: Set the dispatch status ID here
-            "pickup_location": "Some location",  # Example: Set the pickup location here
-            # Add other fields for DispatchEntry as needed
-        }
-
-        dispatch_entry_serializer = DispatchEntrySerializer(data=dispatch_entry_data)
-        if dispatch_entry_serializer.is_valid():
-            dispatch_entry_serializer.save()
-            return Response({'message': 'Data saved successfully!'})
-        else:
-            return Response(dispatch_entry_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def get(self, request):
-        # Implement your logic to handle GET requests here
-        # For example, fetch data from the database and return as JSON response
-        dispatch_entries = DispatchEntry.objects.all()
-        serializer = DispatchEntrySerializer(dispatch_entries, many=True)
-        return Response(serializer.data)
+# 
 
 
 

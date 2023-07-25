@@ -1,7 +1,7 @@
 from django.db import models
 
 class Accounts(models.Model):
-    account_id = models.AutoField(primary_key=True)
+    account_id = models.IntegerField(primary_key=True)
     name = models.CharField(max_length=100)
     create_date = models.DateField(auto_now_add=True) 
     address = models.CharField(max_length=100)
@@ -264,7 +264,8 @@ class SystemUserStatusRecords(models.Model):
     create_date = models.DateField(auto_now_add=True)
     
 class Vehicles(models.Model):
-    vehicle_id = models.AutoField(primary_key=True)
+    # vehicle_id = models.IntegerField(null=True, blank=True)
+    vehicle_id = models.IntegerField(primary_key=True)
     make = models.CharField(max_length=100)
     vehicle_class = models.CharField(max_length=100)
     vehicle_type = models.IntegerField()

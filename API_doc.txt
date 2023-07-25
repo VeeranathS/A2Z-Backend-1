@@ -94,22 +94,18 @@ drivers/nearby/?pickup_latitude=<PICKUP_LATITUDE>&pickup_longitude=<PICKUP_LONGI
 http://127.0.0.1:8000/web-portal/
 #post request
 {
-   "customer": {
-      "name": "anjan",
-      "email": "rkabadi2@gmail.com",
-      "phone": "9164629281",
-      "whatsapp_number": "9164629281"
-    },
-    "asset_id": {
-      "license_plate": "KA00AA1234",
-      "create_date": "2023-07-22"
-    },
-    "vehicle":{
-      "make": "Toyota",
-      "vehicle_class": "SUV",
-      "vehicle_type": 1
-    }
+  "name": "John Doe",
+  "email": "johndoe@example.com",
+  "phone": 1234567890,
+  "whatsapp_number":1231312,
+  "license_plate":"ka01ev1765",
+  "make": "MOTO GUZZI V9",
+  "vehicle_class": "PREMIUM BIKE",
+  "vehicle_type": 2,
+  "pickup_location":"vv puram"
 }
+
+
 
 #get request
  {
