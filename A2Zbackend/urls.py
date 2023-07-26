@@ -50,6 +50,8 @@ urlpatterns = [
     path('dispatch-entries/<int:entry_id>/', views.create_dispatch_entry),
 
     path('web-portal/', views.WebPortalView),
+    path('default-rate/', views.get_default_rate),
+
 
     path('driver-locations/', views.driver_location_list),
     path('driver-locations/<int:location_id>/', views.driver_location_detail),
@@ -68,6 +70,7 @@ urlpatterns = [
     
     path('reasons/', views.reasons_list),
     path('reasons/<int:reason_id>/', views.reasons_detail),
+    
     
     # path('service-providers/', views.service_providers_list),
     # path('service-providers/<int:provider_id>/', views.service_provider_detail),

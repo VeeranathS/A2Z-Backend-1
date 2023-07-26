@@ -1022,9 +1022,10 @@ def WebPortalView(request):
         whatsapp_number = data.get('whatsapp_number')
         license_plate = data.get('license_plate')
         make = data.get('make')
-        vehicle_class = data.get('vehicle_class')
-        vehicle_type = data.get('vehicle_type')
+        # vehicle_class = data.get('vehicle_class')
+        # vehicle_type = data.get('vehicle_type')
         pickup_location = data.get('pickup_location')
+        breakdown_issue = data.get('breakdown_issue')
 
         customer = Customers.objects.create(
             name=name,
@@ -1036,7 +1037,7 @@ def WebPortalView(request):
         customer_id = customer.customer_id
 
         try:
-            vehicle = Vehicles.objects.get(make=make, vehicle_class=vehicle_class, vehicle_type=vehicle_type)
+            vehicle = Vehicles.objects.get(make=make)
         except Vehicles.DoesNotExist:
             return JsonResponse({'error': 'Vehicle not found in the database.'}, status=404)
 
@@ -1052,7 +1053,7 @@ def WebPortalView(request):
         except SystemUser.DoesNotExist:
             return JsonResponse({'error': 'CSR not found in the database.'}, status=404)
         try:
-            reason = Reasons.objects.get(name='AIR FILL', service_type='ROS')
+            reason = Reasons.objects.get(name=breakdown_issue, service_type='ROS')
         except Reasons.DoesNotExist:
             return JsonResponse({'error': 'Reason not found in the database.'}, status=404)
         try:
@@ -1120,6 +1121,51 @@ def create_dispatch_entry(request):
         dispatch_entry = DispatchEntry.objects.create(**dispatch_entry_data)
         serializer = DispatchEntrySerializer(dispatch_entry)
         return Response(serializer.data)
+
+
+import json
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from .models import RateItem, Vehicles
+
+@csrf_exempt
+def get_default_rate(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+
+        name = data.get('breakdown_issue')
+        account_id = data.get('account_id')
+        account_name = data.get('account_name')
+        account_company_id = data.get('account_company_id')
+        make = data.get('make')
+
+        try:
+            vehicle = Vehicles.objects.get(
+                make=make
+            )
+        except Vehicles.DoesNotExist:
+            return JsonResponse({'error': 'Vehicle not found for the given criteria.'}, status=404)
+
+        try:
+            rate_item = RateItem.objects.get(
+                name=name,
+                account_id=account_id,
+                account_name=account_name,
+                account_company_id=account_company_id,
+                vehicle_id=vehicle
+            )
+        except RateItem.DoesNotExist:
+            return JsonResponse({'error': 'RateItem not found for the given criteria.'}, status=404)
+
+        response_data = {
+            'default_rate': rate_item.default_rate,
+        }
+
+        return JsonResponse(response_data, status=200)
+
+    else:
+        return JsonResponse({'error': 'Invalid request method.'}, status=400)
+
 
 # class WebPortalView(APIView):
 #     def get(self, request):
