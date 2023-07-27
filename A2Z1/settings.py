@@ -63,9 +63,10 @@ CORS_ALLOWED_ORIGINS = [
     # "http://localhost:3000",
     # "http://localhost:5173",
     # "http://localhost:5174",
-    "http://127.0.0.1:5173",
-    "http://127.0.0.1:3000",
+    # "http://127.0.0.1:5173",
+    # "http://127.0.0.1:3000",
     "http://localhost:3000",
+    "http://localhost:5173",
     
 
 
@@ -116,9 +117,9 @@ WSGI_APPLICATION = 'A2Z1.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postgres',
+        'NAME': 'newdata',
         'USER': 'postgres',
-        'PASSWORD': 'sidd',
+        'PASSWORD': 'anjan',
         'HOST': 'localhost',
         'PORT': '5432',
     }
