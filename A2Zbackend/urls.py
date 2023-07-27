@@ -9,7 +9,7 @@ urlpatterns = [
     # path('create-customers/', views.create_customer),
     # path('create-service/', views.create_service),
     
-    path('create-dispatch-entry/', views.create_dispatch_entry),
+    # path('create-dispatch-entry/', views.create_dispatch_entry),
     
     #path('nearby-drivers/', nearby_drivers_api, name='nearby-drivers'),
     
@@ -47,7 +47,7 @@ urlpatterns = [
     path('entry-status-records/<int:record_id>/', views.dispatch_entry_status_records_detail),
 
     path('dispatch-entries/', views.create_dispatch_entry),
-    path('dispatch-entries/<int:entry_id>/', views.create_dispatch_entry),
+    path('dispatch-entries/<int:dispatch_entry_id>/', views.get_dispatch_entry),
 
     path('web-portal/', views.WebPortalView),
     path('default-rate/', views.get_default_rate),

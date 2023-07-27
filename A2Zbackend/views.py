@@ -15,41 +15,41 @@ from .models import DispatchEntry, Cases, Accounts, ServiceTypes, Reasons, Custo
 from .serializers import DispatchEntrySerializer
 
 
-@api_view(['POST'])
-def create_dispatch_entry(request):
-    service_id = request.data.get('service', {}).get('serviceId')
-    customer_partner_id = request.data.get('Customer Partner', {}).get('id')
-    customer_name = request.data.get('CustomerInfo', {}).get('name')
-    customer_phone = request.data.get('CustomerInfo', {}).get('phone')
-    customer_email = request.data.get('CustomerInfo', {}).get('email')
-    make = request.data.get('assets', {}).get('make')
-    model = request.data.get('assets', {}).get('model')
-    color = request.data.get('assets', {}).get('color')
-    year = request.data.get('assets', {}).get('year')
-    street = request.data.get('location', {}).get('street')
-    city = request.data.get('location', {}).get('city')
-    state = request.data.get('location', {}).get('state')
-    zip_code = request.data.get('location', {}).get('zip')
-    longitude = request.data.get('location', {}).get('longitude')
-    latitude = request.data.get('location', {}).get('latitude')
-    address = request.data.get('location', {}).get('address')
-    job_price = request.data.get('jobInfo', {}).get('price')
+# @api_view(['POST'])
+# def create_dispatch_entry(request):
+#     service_id = request.data.get('service', {}).get('serviceId')
+#     customer_partner_id = request.data.get('Customer Partner', {}).get('id')
+#     customer_name = request.data.get('CustomerInfo', {}).get('name')
+#     customer_phone = request.data.get('CustomerInfo', {}).get('phone')
+#     customer_email = request.data.get('CustomerInfo', {}).get('email')
+#     make = request.data.get('assets', {}).get('make')
+#     model = request.data.get('assets', {}).get('model')
+#     color = request.data.get('assets', {}).get('color')
+#     year = request.data.get('assets', {}).get('year')
+#     street = request.data.get('location', {}).get('street')
+#     city = request.data.get('location', {}).get('city')
+#     state = request.data.get('location', {}).get('state')
+#     zip_code = request.data.get('location', {}).get('zip')
+#     longitude = request.data.get('location', {}).get('longitude')
+#     latitude = request.data.get('location', {}).get('latitude')
+#     address = request.data.get('location', {}).get('address')
+#     job_price = request.data.get('jobInfo', {}).get('price')
 
-    dispatch_entry = DispatchEntry.objects.create(
-        service_type_id=ServiceTypes.objects.get(service_type_id=service_id),
-        customer_id=Customers.objects.create(name=customer_name, phone=customer_phone, email=customer_email),
-        asset_id=DispatchEntryAssets.objects.create(make=make, model=model, colorid=color, model_year=year),
-    )
+#     dispatch_entry = DispatchEntry.objects.create(
+#         service_type_id=ServiceTypes.objects.get(service_type_id=service_id),
+#         customer_id=Customers.objects.create(name=customer_name, phone=customer_phone, email=customer_email),
+#         asset_id=DispatchEntryAssets.objects.create(make=make, model=model, colorid=color, model_year=year),
+#     )
 
-    response_data = {
-        "service": {"serviceId": service_id},
-        "Customer Partner": {"id": customer_partner_id},
-        "CustomerInfo": {"name": customer_name, "phone": customer_phone, "email": customer_email},
-        "location": {"street": street, "city": city, "state": state, "zip": zip_code, "longitude": longitude, "latitude": latitude, "address": address},
-        "assets": {"make": make, "model": model, "color": color, "year": year},
-        "jobInfo": {"price": job_price}
-    }
-    return Response(response_data)
+#     response_data = {
+#         "service": {"serviceId": service_id},
+#         "Customer Partner": {"id": customer_partner_id},
+#         "CustomerInfo": {"name": customer_name, "phone": customer_phone, "email": customer_email},
+#         "location": {"street": street, "city": city, "state": state, "zip": zip_code, "longitude": longitude, "latitude": latitude, "address": address},
+#         "assets": {"make": make, "model": model, "color": color, "year": year},
+#         "jobInfo": {"price": job_price}
+#     }
+#     return Response(response_data)
 
 ## Accounts API
 @api_view(['GET', 'POST'])
@@ -1103,24 +1103,24 @@ def WebPortalView(request):
 
 
 
-@api_view(['GET', 'POST'])
-def create_dispatch_entry(request):
-    if request.method == 'GET':
-        dispatch_entries = DispatchEntry.objects.all()
-        serializer = DispatchEntrySerializer(dispatch_entries, many=True)
-        return Response(serializer.data)
-    elif request.method == 'POST':
-        customer_data = {}
-        customer = Customers.objects.create(**customer_data)
+# @api_view(['GET', 'POST'])
+# def create_dispatch_entry(request):
+#     if request.method == 'GET':
+#         dispatch_entries = DispatchEntry.objects.all()
+#         serializer = DispatchEntrySerializer(dispatch_entries, many=True)
+#         return Response(serializer.data)
+#     elif request.method == 'POST':
+#         customer_data = {}
+#         customer = Customers.objects.create(**customer_data)
 
 
-        dispatch_entry_data = {
-            'customer_id': customer,
-        }
+#         dispatch_entry_data = {
+#             'customer_id': customer,
+#         }
 
-        dispatch_entry = DispatchEntry.objects.create(**dispatch_entry_data)
-        serializer = DispatchEntrySerializer(dispatch_entry)
-        return Response(serializer.data)
+#         dispatch_entry = DispatchEntry.objects.create(**dispatch_entry_data)
+#         serializer = DispatchEntrySerializer(dispatch_entry)
+#         return Response(serializer.data)
 
 
 import json
@@ -1166,6 +1166,125 @@ def get_default_rate(request):
     else:
         return JsonResponse({'error': 'Invalid request method.'}, status=400)
 
+@api_view(['GET'])
+def get_dispatch_entry(request,dispatch_entry_id):
+    try:
+        account = DispatchEntry.objects.get(dispatch_entry_id=dispatch_entry_id)
+    except DispatchEntry.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    
+    if request.method == 'GET':
+        serializer = DispatchEntrySerializer(account)
+        return Response(serializer.data)
+
+@api_view(['GET', 'POST'])
+def create_dispatch_entry(request):
+    if request.method == 'GET':
+        dispatch_entries = DispatchEntry.objects.all()
+        serializer = DispatchEntrySerializer(dispatch_entries, many=True)
+        return Response(serializer.data)
+    
+    
+@csrf_exempt
+def newcases(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+
+        name = data.get('name')
+        email = data.get('email')
+        phone = data.get('phone')
+        whatsapp_number = data.get('whatsapp_number')
+        license_plate = data.get('license_plate')
+        make = data.get('make')
+        partner_service_id=data.get('partner_service_id')
+        # vehicle_class = data.get('vehicle_class')
+        # vehicle_type = data.get('vehicle_type')
+        pickup_location = data.get('pickup_location')
+        breakdown_issue = data.get('breakdown_issue')
+
+        customer = Customers.objects.create(
+            name=name,
+            email=email,
+            phone=phone,
+            whatsapp_number=whatsapp_number
+        )
+
+        customer_id = customer.customer_id
+
+        try:
+            vehicle = Vehicles.objects.get(make=make)
+        except Vehicles.DoesNotExist:
+            return JsonResponse({'error': 'Vehicle not found in the database.'}, status=404)
+
+        asset = DispatchEntryAssets.objects.create(
+            customer_id=customer,
+            license_plate=license_plate,
+            vehicle_id=vehicle
+        )
+
+        asset_id = asset.asset_id
+        try:
+            csr = SystemUser.objects.get(name='Rohan')
+        except SystemUser.DoesNotExist:
+            return JsonResponse({'error': 'CSR not found in the database.'}, status=404)
+        try:
+            reason = Reasons.objects.get(name=breakdown_issue, service_type='ROS')
+        except Reasons.DoesNotExist:
+            return JsonResponse({'error': 'Reason not found in the database.'}, status=404)
+        try:
+            service_type = ServiceTypes.objects.get(service='AIR FILL', service_type='ROS')
+        except ServiceTypes.DoesNotExist:
+            return JsonResponse({'error': 'ServiceType not found in the database.'}, status=404)
+        try:
+            dispatch_status = DispatchStatus.objects.get(name='Waiting')
+        except DispatchStatus.DoesNotExist:
+            return JsonResponse({'error': 'DispatchStatus not found in the database.'}, status=404)
+        try:
+            company = Company.objects.get(name="A2Z ASSIST")
+        except Company.DoesNotExist:
+            return JsonResponse({'error': 'Company not found in the database.'}, status=404)
+        try:
+            account = Accounts.objects.get(name="ALLIANZ")
+        except Accounts.DoesNotExist:
+            return JsonResponse({'error':"Account not found in the database."},status=404)
+
+
+        case = Cases.objects.create(
+            dispatch_entry_id=None,  
+            csr_id=csr,  
+        )
+
+        dispatch_entry = DispatchEntry.objects.create(
+            customer_id=customer,
+            asset_id=asset,
+            account_id=account,
+            case_id=case,  
+            partner_service_id=partner_service_id, 
+            service_type_id=service_type,  
+            reason_id=reason,  
+            dispatch_status_id=dispatch_status, 
+            csr_id=csr,  
+            company_id=company,  
+            pickup_location=pickup_location,  
+            dropoff_location="None"  
+        )
+
+        return JsonResponse({'message': 'Data successfully stored in DispatchEntry model.', 'customer_id': customer_id, 'asset_id': asset_id}, status=201)
+    else:
+        return JsonResponse({'error': 'Invalid request method.'}, status=400)
+#     elif request.method == 'POST':
+#         customer_data = {}
+#         customer = Customers.objects.create(**customer_data)
+
+
+#         dispatch_entry_data = {
+#             'customer_id': customer,
+#         }
+
+#         dispatch_entry = DispatchEntry.objects.create(**dispatch_entry_data)
+#         serializer = DispatchEntrySerializer(dispatch_entry)
+#         return Response(serializer.data)
+    
 
 # class WebPortalView(APIView):
 #     def get(self, request):
