@@ -247,20 +247,21 @@ class ServiceTypes(models.Model):
     service_type=models.CharField(max_length=10)
 
 class SystemUser(models.Model):
-    csr_id = models.AutoField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=100)
     create_date = models.DateField(auto_now_add=True)
     role=models.CharField(max_length=50)
     role_id = models.IntegerField()
     status = models.CharField(max_length=100)
+    authToken = models.CharField(max_length=100,null=True, blank=True)
     
     def save(self, *args, **kwargs):
-        if not self.csr_id:
-            last_driver_location = SystemUser.objects.order_by('-csr_id').first()
+        if not self.id:
+            last_driver_location = SystemUser.objects.order_by('-id').first()
             if last_driver_location:
-                self.csr_id = last_driver_location.csr_id + 1
+                self.id = last_driver_location.id + 1
             else:
-                self.csr_id = 1
+                self.id = 1
         super(SystemUser, self).save(*args, **kwargs)
 
 class SystemUserStatusRecords(models.Model):

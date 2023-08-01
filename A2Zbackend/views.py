@@ -805,6 +805,20 @@ def system_users_list(request):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+# user_api/views.py
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+
+@api_view(['GET'])
+# @permission_classes([IsAuthenticated])
+def get_user_profile(request, username):
+    try:
+        su = SystemUser.objects.get(name=username)
+        serializer = SystemUserSerializer(su)
+        return Response(serializer.data)
+    except SystemUser.DoesNotExist:
+        return Response({'message': 'SystemUser not found.'}, status=404)
 
 @api_view(['GET', 'PUT', 'DELETE'])
 def system_users_detail(request, csr_id):
@@ -1272,6 +1286,62 @@ def newcases(request):
         return JsonResponse({'message': 'Data successfully stored in DispatchEntry model.', 'customer_id': customer_id, 'asset_id': asset_id}, status=201)
     else:
         return JsonResponse({'error': 'Invalid request method.'}, status=400)
+
+
+@api_view([ 'POST'])
+def getVehicleid(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+
+        make = data.get('vehicle')
+        try:
+            vehicle = Vehicles.objects.get(vehicle_id=make)
+        except Vehicles.DoesNotExist:
+            return JsonResponse({'error': 'Vehicle not found in the database.'}, status=404)
+        vehicle_make=vehicle.make
+        vehicle_class=vehicle.vehicle_class
+        vehicle_type=vehicle.vehicle_type
+        return JsonResponse({
+        "vehicle_make":vehicle_make,
+        "vehicle_class":vehicle_class,
+        "vehicle_type":vehicle_type}, status=200)
+    else:
+        return JsonResponse({'error': 'Invalid request method.'}, status=400)
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 #     elif request.method == 'POST':
 #         customer_data = {}
 #         customer = Customers.objects.create(**customer_data)

@@ -79,7 +79,7 @@ urlpatterns = [
     path('service-types/<int:type_id>/', views.service_types_detail),
     
     path('system-users/', views.system_users_list),
-    path('system-users/<int:csr_id>/', views.system_users_detail),
+    path('get_user_profile/<str:username>/', views.get_user_profile),
     
     path('user-status-records/', views.user_status_records_list),
     path('user-status-records/<int:record_id>/', views.user_status_records_detail),
@@ -88,5 +88,7 @@ urlpatterns = [
     path('vehicles/<int:vehicle_id>/', views.vehicles_detail),
     
     path('drivers/nearby/', views.nearby_drivers),
+
+    path('vehicleID/', views.getVehicleid),
     
 ]
