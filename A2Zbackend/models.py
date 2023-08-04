@@ -103,6 +103,8 @@ class DispatchEntry(models.Model):
     company_id = models.ForeignKey('Company',on_delete=models.CASCADE)
     pickup_location = models.CharField(max_length=100)
     dropoff_location = models.CharField(max_length=100, null=True)
+    longitude = models.FloatField(null=True, blank=True)
+    latitude = models.FloatField(null=True, blank=True)
     # partner_caseid = models.IntegerField()
     # repair_status = models.CharField(max_length=100)
     # source = models.CharField(max_length=100,default="web")
