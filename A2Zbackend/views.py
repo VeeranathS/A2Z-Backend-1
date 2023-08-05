@@ -1040,6 +1040,8 @@ def WebPortalView(request):
         # vehicle_type = data.get('vehicle_type')
         pickup_location = data.get('pickup_location')
         breakdown_issue = data.get('breakdown_issue')
+        longitude = data.get('longitude')
+        latitude = data.get('latitude')
 
         customer = Customers.objects.create(
             name=name,
@@ -1105,7 +1107,9 @@ def WebPortalView(request):
             csr_id=csr,  
             company_id=company,  
             pickup_location=pickup_location,  
-            dropoff_location="None"  
+            longitude=longitude,
+            latitude=latitude,
+            # dropoff_location="None"  
         )
 
         return JsonResponse({'message': 'Data successfully stored in DispatchEntry model.', 'customer_id': customer_id, 'asset_id': asset_id}, status=201)
